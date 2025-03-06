@@ -4,6 +4,7 @@ from .coin import Coin
 from .enemy import Enemy
 from .player import Player
 from game import Game
+from .GeometryRushUI import GeometryRushUI
 
 
 class GameGeometryRush(Game):
@@ -26,6 +27,9 @@ class GameGeometryRush(Game):
         self.coin_spawn_time = 2000
         self.coin_last_spawn_time = pygame.time.get_ticks()
 
+        self.ui = GeometryRushUI(self.screen, self.player)
+
+
     
     def spawn_coins(self):
         coins = pygame.sprite.Group()
@@ -39,8 +43,6 @@ class GameGeometryRush(Game):
         return "Geometry Rush"
 
     def update(self):
-        [e.update() for e in self._entities]
-
         #чек колизий
         collected_coins = pygame.sprite.spritecollide(self.player, self.coins, False)
         for coin in collected_coins:
@@ -53,6 +55,8 @@ class GameGeometryRush(Game):
             self.add(new_coin)
             self.coin_last_spawn_time = current_time 
 
-        
+
         self.screen.fill(self.BG_COLOR)
-        self._entities.draw(self.screen)
+        super().update()
+     
+       
