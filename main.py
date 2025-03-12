@@ -1,21 +1,23 @@
 import pygame
-from GeometryRush.GeometryRush import GameGeometryRush
+from text import drawText
+from globals import globals 
+from GeometryRush import GeometryRush
 
 pygame.init()
-screen = pygame.display.set_mode((888, 555))
+globals["screen"] = pygame.display.set_mode((888, 555))
+
+import menu
+# импорт меню после инициализации pygame, потому что
+# в menu.py используется screen
+
 
 def main():
     clock = pygame.time.Clock()
     running = True
 
-    game = GameGeometryRush(screen)
-    pygame.display.set_caption(game.name)
-
     while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-        game.update()
+
+        running = globals["selectedGame"].update(pygame.event.get())
         pygame.display.flip()
         clock.tick(120)
 
