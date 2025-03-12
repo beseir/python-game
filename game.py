@@ -1,17 +1,19 @@
 import pygame
+from scene import Scene
 
-
-class Game:
+class Game(Scene):
     def __init__(self, screen):
-        self.screen = screen
+        super().__init__(screen)
         self._entities = pygame.sprite.Group()
 
     def add(self, entity):
         self._entities.add(entity)
-       
-    @property
-    def name(self):
-        pass
+    
+    name = "Game"
 
-    def update(self):
+    def update(self, events: list[pygame.event]) -> bool:
+        shouldContinue = super().update(events)
+
         [e.update() for e in self.entities]
+
+        return shouldContinue

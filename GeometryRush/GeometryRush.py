@@ -34,11 +34,11 @@ class GameGeometryRush(Game):
             coins.add(coin)
         return coins
 
-    @property
-    def name(self):
-        return "Geometry Rush"
+    name = "Geometry Rush"
 
-    def update(self):
+    def update(self, events: list[pygame.event]) -> bool:
+        shouldContinue = super().update(events)
+
         [e.update() for e in self._entities]
 
         #чек колизий
@@ -56,3 +56,5 @@ class GameGeometryRush(Game):
         
         self.screen.fill(self.BG_COLOR)
         self._entities.draw(self.screen)
+
+        return shouldContinue
