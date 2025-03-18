@@ -41,9 +41,8 @@ class GameGeometryRush(Game):
     name = "Geometry Rush"
 
     def update(self, events: list[pygame.event]) -> bool:
-        shouldContinue = super().update(events)
         
-        [e.update() for e in self._entities]
+        
         
         #чек колизий
         collected_coins = pygame.sprite.spritecollide(self.player, self.coins, False)
@@ -60,5 +59,6 @@ class GameGeometryRush(Game):
 
         self.screen.fill(self.BG_COLOR)
         self._entities.draw(self.screen)
+        shouldContinue = super().update(events)
 
         return shouldContinue

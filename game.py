@@ -17,7 +17,7 @@ class Game(Scene):
     def update(self, events: list[pygame.event]) -> bool:
         shouldContinue = super().update(events)
 
-        [e.update() for e in self.entities]
+        [e.update() for e in self._entities]
 
         self._entities.draw(self.screen)
         self.ui.update()
