@@ -13,20 +13,16 @@ def drawText(surface, text, font_size, color, center, angle, font_name=None):
       angle     : float - угол поворота текста в градусах.
       font_name : str или None - путь к файлу шрифта или имя системного шрифта (по умолчанию None, используется системный шрифт).
     """
-    # Создаём объект шрифта
+
     if font_name:
         font = pygame.font.Font(font_name, font_size)
     else:
         font = pygame.font.SysFont(None, font_size)
     
-    # Рендерим текст (с прозрачным фоном)
     text_surface = font.render(text, True, color)
     
-    # Поворачиваем текстовую поверхность на заданный угол
     rotated_surface = pygame.transform.rotate(text_surface, angle)
     
-    # Получаем прямоугольник с центром в нужной точке
     rotated_rect = rotated_surface.get_rect(center=center)
     
-    # Отрисовываем повёрнутый текст на основной поверхности
     surface.blit(rotated_surface, rotated_rect)
