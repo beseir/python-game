@@ -18,6 +18,8 @@ class Player(Entity):
      
         self._coins = 0
 
+        self.velocity = pygame.Vector2(0, 0)
+
     @property
     def coins(self):
         return self._coins
@@ -49,6 +51,13 @@ class Player(Entity):
             normalized_movement = movement.normalize() * self.speed
             self.position += normalized_movement
             self.rect.center = self.position
+        
+        if self.velocity.length() > 0:
+            self.position += self.velocity
+            self.velocity *= 0.6
+            self.rect.center = self.position
+        
+        
 
     def update_rotation(self, movement):
         if movement.length() > 0:

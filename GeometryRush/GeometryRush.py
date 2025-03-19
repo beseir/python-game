@@ -2,6 +2,7 @@ import random
 import pygame
 from .coin import Coin
 from .enemy import Enemy
+from .firewall import Firewall
 from .player import Player
 from game import Game
 from .GeometryRushUI import GeometryRushUI
@@ -18,8 +19,10 @@ class GameGeometryRush(Game):
         self.coins =  self.spawn_coins()
 
         self.testEnemy = Enemy(self.player)
+        self.firewall = Firewall(self)
 
         self.add(self.testEnemy)
+        self.add(self.firewall)
         self.add(self.coins)
         self.add(self.player)
 
@@ -27,6 +30,8 @@ class GameGeometryRush(Game):
         self.coin_last_spawn_time = pygame.time.get_ticks()
 
         self.ui = GeometryRushUI(self.screen, self.player)
+
+        self.direction = pygame.Vector2(1, 0)
 
 
     
@@ -46,7 +51,10 @@ class GameGeometryRush(Game):
         #чек колизий
         collected_coins = pygame.sprite.spritecollide(self.player, self.coins, False)
         for coin in collected_coins:
-            coin.pickup(self.player)  
+            coin.pickup(self.player)
+
+        if (pygame.sprite.collide_rect(self.player, self.firewall)):
+            self.player.velocity = self.direction * 100
             
         current_time = pygame.time.get_ticks()
         if current_time - self.coin_last_spawn_time > self.coin_spawn_time:
@@ -58,7 +66,7 @@ class GameGeometryRush(Game):
 
         self.screen.fill(self.BG_COLOR)
         # self.camera.pos = self.player.position
-        self.camera.pos.x += 1
+        self.camera.pos += self.direction
         shouldContinue = super().update(events)
 
         return shouldContinue
