@@ -55,6 +55,9 @@ class GameGeometryRush(Game):
 
         if (pygame.sprite.collide_rect(self.player, self.firewall)):
             self.player.velocity = self.direction * 100
+
+        if (pygame.sprite.collide_rect(self.player, self.testEnemy)):
+            self.player.velocity = (self.player.position - self.testEnemy.position).normalize() * 100
             
         current_time = pygame.time.get_ticks()
         if current_time - self.coin_last_spawn_time > self.coin_spawn_time:
