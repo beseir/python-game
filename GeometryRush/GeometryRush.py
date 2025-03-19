@@ -50,7 +50,7 @@ class GameGeometryRush(Game):
             
         current_time = pygame.time.get_ticks()
         if current_time - self.coin_last_spawn_time > self.coin_spawn_time:
-            new_coin = Coin(random.randint(50, 750), random.randint(50, 550))
+            new_coin = Coin(random.randint(int(self.camera.pos.x+1000), int(self.camera.pos.x+2000)), random.randint(int(self.camera.pos.y-200), int(self.camera.pos.y+200)))
             self.coins.add(new_coin)
             self.add(new_coin)
             self.coin_last_spawn_time = current_time 
