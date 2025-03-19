@@ -11,7 +11,7 @@ class Enemy(Entity):
         super().__init__(self.image, pygame.math.Vector2(0, 0))
 
         self.target = target
-        self.speed = 4
+        self.speed = 1.5
 
 
     def update(self):
@@ -21,4 +21,4 @@ class Enemy(Entity):
 
         self.rect = self.image.get_rect(center=self.position)
 
-        self.position = self.position + movement
+        self.position = self.position + movement * self.speed
