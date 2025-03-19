@@ -13,7 +13,6 @@ class GameGeometryRush(Game):
         super().__init__(screen)
 
         self.BG_COLOR = (60, 255, 120)
-        self.entities = pygame.sprite.Group()
 
         self.player = Player()
         self.coins =  self.spawn_coins()
@@ -58,7 +57,8 @@ class GameGeometryRush(Game):
 
 
         self.screen.fill(self.BG_COLOR)
-        self._entities.draw(self.screen)
+        # self.camera.pos = self.player.position
+        self.camera.pos.x += 1
         shouldContinue = super().update(events)
 
         return shouldContinue

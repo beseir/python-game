@@ -1,6 +1,7 @@
 import pygame
 from ui import UI
 from scene import Scene
+from camera import Camera
 
 class Game(Scene):
     def __init__(self, screen):
@@ -8,6 +9,7 @@ class Game(Scene):
         self.screen = screen
         self.ui = UI(screen)
         self._entities = pygame.sprite.Group()
+        self.camera = Camera((0, 0), screen.get_size())
 
     def add(self, entity):
         self._entities.add(entity)
@@ -19,7 +21,7 @@ class Game(Scene):
 
         [e.update() for e in self._entities]
 
-        self._entities.draw(self.screen)
+        self.camera.draw_group(self._entities, self.screen)
         self.ui.update()
         
         return shouldContinue
