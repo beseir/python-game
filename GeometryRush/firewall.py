@@ -14,4 +14,4 @@ class Firewall(Entity):
 
     def update(self):
         self.rect = self.image.get_rect(center=self.position)
-        self.position = (self.game.camera.pos.x - self.game.screen.get_size()[0] / 2, self.game.camera.pos.y - self.image.get_size()[1]/4)
+        self.position = (self.game.position.x - self.game.screen.get_size()[0] / 2, self.game.position.y - self.image.get_size()[1]/4)

@@ -32,6 +32,7 @@ class GameGeometryRush(Game):
         self.ui = GeometryRushUI(self.screen, self.player)
 
         self.direction = pygame.Vector2(1, 0)
+        self.position = pygame.Vector2(0, 0)
 
 
     
@@ -68,8 +69,13 @@ class GameGeometryRush(Game):
 
 
         self.screen.fill(self.BG_COLOR)
-        # self.camera.pos = self.player.position
-        self.camera.pos += self.direction
+
+        self.position += self.direction
+        self.position += (self.player.position - self.position) * 0.001
+        camera_direction = (self.position - self.camera.pos)
+        if camera_direction.length() > 0:
+            self.camera.pos += camera_direction * 0.3
+        
         shouldContinue = super().update(events)
 
         return shouldContinue
