@@ -73,7 +73,7 @@ class GameGeometryRush(Game):
         self.screen.fill(self.BG_COLOR)
 
         self.position += self.direction
-        self.position += (self.player.position - self.position) * 0.001
+        self.position.y += (self.player.position.y - self.position.y) * 0.001
         camera_direction = (self.position - self.camera.pos)
         if camera_direction.length() > 0:
             self.camera.pos += camera_direction * 0.3
