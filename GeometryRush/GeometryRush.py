@@ -6,12 +6,14 @@ from .firewall import Firewall
 from .player import Player
 from game import Game
 from .GeometryRushUI import GeometryRushUI
-
+from globals import globals
 
 class GameGeometryRush(Game):
 
     def __init__(self, screen):
         super().__init__(screen)
+
+        globals["camera"] = self.camera
 
         self.BG_COLOR = (60, 255, 120)
 
@@ -55,12 +57,11 @@ class GameGeometryRush(Game):
             coin.pickup(self.player)
 
         if (pygame.sprite.collide_rect(self.player, self.firewall)):
-            self.camera.shake(0.2)
-            self.player.velocity = self.direction * 100
+            self.player.damage(10, self.player.position - self.direction)
 
         if (pygame.sprite.collide_rect(self.player, self.testEnemy)):
-            self.camera.shake(0.2)
-            self.player.velocity = (self.player.position - self.testEnemy.position).normalize() * 100
+            self.player.damage(10, self.testEnemy.position)
+            
             
         current_time = pygame.time.get_ticks()
         if current_time - self.coin_last_spawn_time > self.coin_spawn_time:

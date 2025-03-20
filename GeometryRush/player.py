@@ -54,7 +54,7 @@ class Player(Entity):
         
         if self.velocity.length() > 0:
             self.position += self.velocity
-            self.velocity *= 0.6
+            self.velocity *= 0.9
             self.rect.center = self.position
         
         
