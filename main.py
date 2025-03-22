@@ -4,7 +4,7 @@ from globals import globals
 from GeometryRush import GeometryRush
 
 pygame.init()
-globals["screen"] = pygame.display.set_mode((888, 555))
+globals["screen"] = pygame.display.set_mode((888, 555), pygame.RESIZABLE)
 
 import menu
 # импорт меню после инициализации pygame, потому что
