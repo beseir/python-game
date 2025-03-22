@@ -57,10 +57,10 @@ class GameGeometryRush(Game):
             coin.pickup(self.player)
 
         if (pygame.sprite.collide_rect(self.player, self.firewall)):
-            self.player.damage(10, self.player.position - self.direction)
+            self.player.damage(1, self.player.position - self.direction)
 
         if (pygame.sprite.collide_rect(self.player, self.testEnemy)):
-            self.player.damage(10, self.testEnemy.position)
+            self.player.damage(1, self.testEnemy.position)
             
             
         current_time = pygame.time.get_ticks()

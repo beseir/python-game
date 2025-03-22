@@ -59,5 +59,4 @@ class Camera:
         Перебирает все спрайты и отрисовывает их с применёнными преобразованиями камеры.
         """
         for sprite in group:
-            transformed_rect = self.apply_rect(sprite.rect)
-            surface.blit(sprite.image, transformed_rect)
+            sprite.draw(surface, self)
