@@ -4,14 +4,18 @@ from entity import Entity
 from .player import Player
 
 class Enemy(Entity):
-    def __init__(self, game):
+    def __init__(self, position, game):
         self.image = pygame.Surface((50, 50))
         self.image.fill((255, 22, 22))
       
         super().__init__(self.image, pygame.math.Vector2(0, 0))
 
+        self.position = position
+
         self.game = game
         self.speed = 1.5
+        self.max_health = 20
+        self.health = self.max_health
         self.show_health = True
 
 
@@ -27,3 +31,10 @@ class Enemy(Entity):
         self.rect = self.image.get_rect(center=self.position)
 
         self.position = self.position + movement * self.speed
+        self.position += self.velocity * 0.4
+        self.velocity *= 0.9
+
+        if self.health <= 0:
+            self.drop_coins(10)
+            self.kill()
+            self.game.defeated_enemies += 1

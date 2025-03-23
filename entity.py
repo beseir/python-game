@@ -10,12 +10,12 @@ class Entity(pygame.sprite.Sprite):
         self.position = pygame.math.Vector2(start_position) if start_position else pygame.math.Vector2(0, 0)
         self.velocity = pygame.math.Vector2(0, 0)
         self.direction = pygame.math.Vector2(0, 0)
-        self.initial_health = 100
+        self.max_health = 100
         self.health = 100
         self.show_health = False
         self.game = globals["game"]
 
-    def damage(self, damage: float, attacker_position: pygame.Vector2 = None):
+    def damage(self, damage: int, attacker_position: pygame.Vector2 = None):
         if attacker_position != None:
             attack_direction = (self.position - attacker_position)
             if attack_direction.length() > 0:
@@ -41,7 +41,7 @@ class Entity(pygame.sprite.Sprite):
             bar_x = self.rect.x + (self.rect.width - bar_width) / 2
             bar_y = self.rect.top - bar_height - 4
 
-            health_ratio = self.health / self.initial_health
+            health_ratio = self.health / self.max_health
             current_bar_width = int(bar_width * health_ratio)
 
             pygame.draw.rect(surface, (100, 100, 100), camera.apply_rect(pygame.Rect(bar_x, bar_y, bar_width, bar_height)))
@@ -51,5 +51,5 @@ class Entity(pygame.sprite.Sprite):
         from GeometryRush.coin import Coin
         for _ in range(count):
             coin = Coin(self.position.x, self.position.y)
-            coin.velocity = (self.velocity + self.direction * 3 + pygame.Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0)).normalize()) * random.uniform(0.0, max(count / 10.0, 10.0))
+            coin.velocity = (self.velocity + self.direction + pygame.Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0)).normalize()) * random.uniform(0.0, max(count / 10.0, 10.0))
             self.game.add_coin(coin)

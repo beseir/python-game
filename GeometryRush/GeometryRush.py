@@ -22,15 +22,17 @@ class GameGeometryRush(Game):
         self.bullets = pygame.sprite.Group()
         self.inputs = [
             input.InputKeyboard(pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_SPACE),
-            input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
+            # input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
         ]
         self.players = pygame.sprite.Group(list([Player(i) for i in self.inputs])) if players is None else players
         self.coins = pygame.sprite.Group()
 
-        self.testEnemy = Enemy(self)
+        self.enemies = pygame.sprite.Group()
+        self.defeated_enemies = 0
+        self.enemies_to_win = 150
         self.firewall = Firewall(self)
 
-        self.add(self.testEnemy)
+        self.add(self.enemies)
         self.add(self.firewall)
         self.add(self.coins)
         self.add(self.players)
@@ -53,6 +55,10 @@ class GameGeometryRush(Game):
         self.coins.add(coin)
         self.add(coin)
 
+    def add_enemy(self, enemy):
+        self.enemies.add(enemy)
+        self.add(enemy)
+
     def update(self, events: list[pygame.event]) -> bool:
         
         
@@ -61,6 +67,8 @@ class GameGeometryRush(Game):
         for player in self.players:
             if pygame.key.get_pressed()[pygame.K_k]:
                 player.health = 0
+            if pygame.key.get_pressed()[pygame.K_c]:
+                player.coins += 1
 
             collected_coins = pygame.sprite.spritecollide(player, self.coins, False)
             for coin in collected_coins:
@@ -69,8 +77,9 @@ class GameGeometryRush(Game):
             if (pygame.sprite.collide_rect(player, self.firewall)):
                 player.damage(1, player.position - self.direction)
 
-            if (pygame.sprite.collide_rect(player, self.testEnemy)):
-                player.damage(1, self.testEnemy.position)
+            for enemy in self.enemies:
+                if (pygame.sprite.collide_rect(player, enemy)):
+                    player.damage(1, enemy.position)
         
 
         for bullet in self.bullets:
@@ -94,9 +103,24 @@ class GameGeometryRush(Game):
                 
                 bullet.kill()
             
+            for enemy in self.enemies:
+                if pygame.sprite.collide_rect(bullet, enemy):
+                    enemy.damage(bullet.power, bullet.position)
+                    bullet.kill()
+            
         for coin in self.coins:
             if pygame.sprite.collide_rect(coin, self.firewall):
                 coin.push(self.direction)
+
+
+        for enemy1 in self.enemies:
+            for enemy2 in self.enemies:
+                if (enemy1 == enemy2):
+                    continue
+                
+                if pygame.sprite.collide_rect(enemy1, enemy2):
+                    enemy1.push(enemy1.position - enemy2.position)
+        
             
         current_time = pygame.time.get_ticks()
         if current_time - self.coin_last_spawn_time > self.coin_spawn_time:
@@ -104,6 +128,23 @@ class GameGeometryRush(Game):
             self.coins.add(new_coin)
             self.add(new_coin)
             self.coin_last_spawn_time = current_time 
+
+        if len(self.enemies) < len(self.players):
+            # в начале игры, когда убито мало врагов, будут спавнится в основном лёгкие (значение r будет близко к 1.0)
+            # а под конец игры значение r в среднем будет уменьшаться
+            r = random.random() ** (self.defeated_enemies / (self.enemies_to_win*0.6))
+            # ЧЕМ МЕНЬШЕ r - ТЕМ СЛОЖНЕЕ ДОЛЖЕН БЫТЬ ПРОТИВНИК
+
+            position = pygame.Vector2(random.uniform(self.camera.pos.x+1000, self.camera.pos.x+4000), random.uniform(self.camera.pos.y-300, self.camera.pos.y+300))
+            if r < 0.1:
+                print("hard enemy!")
+                enemy = Enemy(position, self)
+                print("enemy added:", enemy.position)
+            else:
+                enemy = Enemy(position, self)
+                print("enemy added:", enemy.position)
+
+            self.add_enemy(enemy)
 
 
         self.screen.fill(self.BG_COLOR)
