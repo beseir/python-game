@@ -1,7 +1,10 @@
+import random
 import pygame
 import math
 from entity import Entity
 from input import Input
+from .bullet import Bullet
+from .coin import Coin
 
 class Player(Entity):
     
@@ -15,9 +18,10 @@ class Player(Entity):
         self.speed = speed
         self.angle = 0
         self.rotation_speed = rotation_speed
-        
+        self.attack_cooldowm = 1
      
-        self._coins = 0
+        self.coins = 0
+        self.show_health = True
 
         self.velocity = pygame.Vector2(0, 0)
 
@@ -68,4 +72,18 @@ class Player(Entity):
         self.update_rotation(self.input_controller.view_direction)
         self.update_position(self.input_controller.movement_direction)
         
+        if self.input_controller.attack:
+            power = min(self.coins, 10)
+            self.coins -= power
+            if power > 0:
+                self.game.add_bullet(Bullet(self.position, self.input_controller.view_direction, power, self))
+        
+        if (self.health <= 0):
+            for _ in range(self.coins):
+                coin = Coin(self.position.x, self.position.y)
+                coin.velocity = (self.velocity + pygame.Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0)).normalize() + self.input_controller.movement_direction * 3) * random.uniform(0.0, max(self.coins / 10.0, 10.0))
+                self.game.add_coin(coin)
+
+            self.kill()
+
         self.rect.center = self.position

@@ -30,6 +30,7 @@ class InputKeyboard(Input):
         if keys[self.key_right]:
             self.movement_direction.x += 1
             
-        self.view_direction = self.movement_direction
+        if self.movement_direction.length() > 0:
+            self.view_direction = self.movement_direction
     
         self.attack = keys[self.key_attack]

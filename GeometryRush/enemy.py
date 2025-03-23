@@ -12,11 +12,14 @@ class Enemy(Entity):
 
         self.game = game
         self.speed = 1.5
+        self.show_health = True
 
 
     def update(self):
         self.target = self.game.get_nearest_player(self.position)
-
+        if self.target is None:
+            return
+            
         movement = (self.target.position - self.position)
         if (movement.length() > 1):
             movement = movement.normalize()

@@ -10,6 +10,7 @@ class Entity(pygame.sprite.Sprite):
         self.velocity = pygame.math.Vector2(0, 0)
         self.initial_health = 100
         self.health = 100
+        self.show_health = False
 
     def damage(self, damage: float, attacker_position: pygame.Vector2 = None):
         if attacker_position != None:
@@ -19,6 +20,9 @@ class Entity(pygame.sprite.Sprite):
                 self.health -= damage
                 if "camera" in globals:
                     globals["camera"].shake(0.3, 5)
+                
+    def push(self, direction):
+        self.velocity += direction.normalize() * 10
 
     def update(self):
         pass
@@ -28,13 +32,14 @@ class Entity(pygame.sprite.Sprite):
         surface.blit(self.image, camera.apply_rect(self.rect))
 
         # health bar
-        bar_width = 50
-        bar_height = 6
-        bar_x = self.rect.x + (self.rect.width - bar_width) / 2
-        bar_y = self.rect.top - bar_height - 4
+        if self.show_health:
+            bar_width = 50
+            bar_height = 6
+            bar_x = self.rect.x + (self.rect.width - bar_width) / 2
+            bar_y = self.rect.top - bar_height - 4
 
-        health_ratio = self.health / self.initial_health
-        current_bar_width = int(bar_width * health_ratio)
+            health_ratio = self.health / self.initial_health
+            current_bar_width = int(bar_width * health_ratio)
 
-        pygame.draw.rect(surface, (100, 100, 100), camera.apply_rect(pygame.Rect(bar_x, bar_y, bar_width, bar_height)))
-        pygame.draw.rect(surface, (255, 0, 255), camera.apply_rect(pygame.Rect(bar_x, bar_y, current_bar_width, bar_height)))
+            pygame.draw.rect(surface, (100, 100, 100), camera.apply_rect(pygame.Rect(bar_x, bar_y, bar_width, bar_height)))
+            pygame.draw.rect(surface, (255, 0, 255), camera.apply_rect(pygame.Rect(bar_x, bar_y, current_bar_width, bar_height)))

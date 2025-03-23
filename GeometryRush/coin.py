@@ -1,7 +1,6 @@
 import pygame
 
 from entity import Entity
-from .player import Player
 
 class Coin(Entity):
     def __init__(self, x, y):
@@ -13,6 +12,12 @@ class Coin(Entity):
         
    
 
-    def pickup(self, pickuper: Player):
+    def pickup(self, pickuper):
         pickuper.coins += 1
         self.kill()
+    
+    def update(self):
+        if self.velocity.length() > 0:
+            self.position += self.velocity
+            self.velocity *= 0.9
+            self.rect.center = self.position

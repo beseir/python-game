@@ -18,11 +18,14 @@ class GameGeometryRush(Game):
 
         self.BG_COLOR = (60, 255, 120)
 
+        self.bullets = pygame.sprite.Group()
         self.inputs = [
             input.InputKeyboard(pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_SPACE),
             input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
         ]
-        self.players = list([Player(i) for i in self.inputs]) if players is None else players
+        self.players = pygame.sprite.Group(list([Player(i) for i in self.inputs])) if players is None else players
+        for player in self.players:
+            player.game = self
         self.coins = pygame.sprite.Group()
 
         self.testEnemy = Enemy(self)
@@ -33,7 +36,7 @@ class GameGeometryRush(Game):
         self.add(self.coins)
         self.add(self.players)
 
-        self.coin_spawn_time = 1000 / len(self.players)
+        self.coin_spawn_time = 1000 / max(len(self.players), 1)
         self.coin_last_spawn_time = pygame.time.get_ticks()
 
         self.ui = GeometryRushUI(self.screen, self.players)
@@ -43,12 +46,23 @@ class GameGeometryRush(Game):
 
     name = "Geometry Rush"
 
+    def add_bullet(self, bullet):
+        self.bullets.add(bullet)
+        self.add(bullet)
+
+    def add_coin(self, coin):
+        self.coins.add(coin)
+        self.add(coin)
+
     def update(self, events: list[pygame.event]) -> bool:
         
         
         
         #чек колизий
         for player in self.players:
+            if pygame.key.get_pressed()[pygame.K_k]:
+                player.health = 0
+
             collected_coins = pygame.sprite.spritecollide(player, self.coins, False)
             for coin in collected_coins:
                 coin.pickup(player)
@@ -59,6 +73,9 @@ class GameGeometryRush(Game):
             if (pygame.sprite.collide_rect(player, self.testEnemy)):
                 player.damage(1, self.testEnemy.position)
             
+        for coin in self.coins:
+            if pygame.sprite.collide_rect(coin, self.firewall):
+                coin.push(self.direction)
             
         current_time = pygame.time.get_ticks()
         if current_time - self.coin_last_spawn_time > self.coin_spawn_time:
@@ -71,7 +88,7 @@ class GameGeometryRush(Game):
         self.screen.fill(self.BG_COLOR)
 
         self.position += self.direction
-        self.position.y += (sum(player.position.y for player in self.players) / len(self.players) - self.position.y) * 0.001
+        self.position.y += (sum(player.position.y for player in self.players) / max(len(self.players), 1) - self.position.y) * 0.001
         camera_direction = (self.position - self.camera.pos)
         if camera_direction.length() > 0:
             self.camera.pos += camera_direction * 0.3
