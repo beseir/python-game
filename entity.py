@@ -1,5 +1,6 @@
 import pygame
 from globals import globals
+import random
 
 class Entity(pygame.sprite.Sprite):
     def __init__(self, image=None, start_position=None ):
@@ -8,9 +9,11 @@ class Entity(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.position = pygame.math.Vector2(start_position) if start_position else pygame.math.Vector2(0, 0)
         self.velocity = pygame.math.Vector2(0, 0)
+        self.direction = pygame.math.Vector2(0, 0)
         self.initial_health = 100
         self.health = 100
         self.show_health = False
+        self.game = globals["game"]
 
     def damage(self, damage: float, attacker_position: pygame.Vector2 = None):
         if attacker_position != None:
@@ -43,3 +46,10 @@ class Entity(pygame.sprite.Sprite):
 
             pygame.draw.rect(surface, (100, 100, 100), camera.apply_rect(pygame.Rect(bar_x, bar_y, bar_width, bar_height)))
             pygame.draw.rect(surface, (255, 0, 255), camera.apply_rect(pygame.Rect(bar_x, bar_y, current_bar_width, bar_height)))
+    
+    def drop_coins(self, count):
+        from GeometryRush.coin import Coin
+        for _ in range(count):
+            coin = Coin(self.position.x, self.position.y)
+            coin.velocity = (self.velocity + self.direction * 3 + pygame.Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0)).normalize()) * random.uniform(0.0, max(count / 10.0, 10.0))
+            self.game.add_coin(coin)

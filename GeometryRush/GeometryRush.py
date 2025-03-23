@@ -8,6 +8,7 @@ from game import Game
 from .GeometryRushUI import GeometryRushUI
 from globals import globals
 import input
+from .bullet import Bullet
 
 class GameGeometryRush(Game):
 
@@ -24,8 +25,6 @@ class GameGeometryRush(Game):
             input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
         ]
         self.players = pygame.sprite.Group(list([Player(i) for i in self.inputs])) if players is None else players
-        for player in self.players:
-            player.game = self
         self.coins = pygame.sprite.Group()
 
         self.testEnemy = Enemy(self)
@@ -72,6 +71,28 @@ class GameGeometryRush(Game):
 
             if (pygame.sprite.collide_rect(player, self.testEnemy)):
                 player.damage(1, self.testEnemy.position)
+        
+
+        for bullet in self.bullets:
+            if (pygame.sprite.collide_rect(bullet, self.firewall)):
+                
+                direction1 = (-bullet.direction + self.direction.rotate( 90) + self.direction * 0.01).normalize()
+                direction2 = (-bullet.direction + self.direction.rotate(-90) + self.direction * 0.01).normalize()
+
+                bullet1 = Bullet(bullet.position + direction1 * 10, direction1, int(bullet.power/2), None)
+                bullet2 = Bullet(bullet.position + direction2 * 10, direction2, int(bullet.power/2), None)
+
+                if int(bullet.power/2) == 0:
+                    bullet1.drop_coins(1)
+                    bullet2.drop_coins(1)
+                else:
+                    self.add_bullet(bullet1)
+                    self.add_bullet(bullet2)
+                
+                if bullet.power % 2 == 1:
+                    bullet.drop_coins(1)
+                
+                bullet.kill()
             
         for coin in self.coins:
             if pygame.sprite.collide_rect(coin, self.firewall):

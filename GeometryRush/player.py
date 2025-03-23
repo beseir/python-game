@@ -4,7 +4,6 @@ import math
 from entity import Entity
 from input import Input
 from .bullet import Bullet
-from .coin import Coin
 
 class Player(Entity):
     
@@ -79,11 +78,7 @@ class Player(Entity):
                 self.game.add_bullet(Bullet(self.position, self.input_controller.view_direction, power, self))
         
         if (self.health <= 0):
-            for _ in range(self.coins):
-                coin = Coin(self.position.x, self.position.y)
-                coin.velocity = (self.velocity + pygame.Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0)).normalize() + self.input_controller.movement_direction * 3) * random.uniform(0.0, max(self.coins / 10.0, 10.0))
-                self.game.add_coin(coin)
-
+            self.drop_coins(self.coins)
             self.kill()
 
         self.rect.center = self.position

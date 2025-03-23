@@ -18,6 +18,7 @@ class Bullet(Entity):
         self.rect = self.image.get_rect()
         self.rect.center = old_center
 
+        self.direction = direction
         self.velocity = direction * speed
 
         self.update_position()

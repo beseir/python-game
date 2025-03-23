@@ -2,6 +2,7 @@ import pygame
 from ui import UI
 from scene import Scene
 from camera import Camera
+import globals
 
 class Game(Scene):
     def __init__(self, screen):
@@ -10,6 +11,7 @@ class Game(Scene):
         self.ui = UI(screen)
         self._entities = pygame.sprite.Group()
         self.camera = Camera((0, 0), screen.get_size())
+        globals.globals["game"] = self
 
     def add(self, entity):
         self._entities.add(entity)
