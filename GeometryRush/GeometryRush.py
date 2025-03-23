@@ -1,7 +1,6 @@
 import random
 import pygame
 from .coin import Coin
-from .enemy import Enemy
 from .firewall import Firewall
 from .player import Player
 from game import Game
@@ -133,12 +132,11 @@ class GameGeometryRush(Game):
 
             position = pygame.Vector2(random.uniform(self.camera.pos.x+1000, self.camera.pos.x+4000), random.uniform(self.camera.pos.y-300, self.camera.pos.y+300))
             if r < 0.1:
-                print("hard enemy!")
-                enemy = Enemy(position, self)
-                print("enemy added:", enemy.position)
+                from .enemy_chain import EnemyChain
+                enemy = EnemyChain(position, self)
             else:
+                from .enemy import Enemy
                 enemy = Enemy(position, self)
-                print("enemy added:", enemy.position)
 
             self.add_enemy(enemy)
 
