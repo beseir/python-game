@@ -32,8 +32,8 @@ class GameGeometryRush(Game):
         self.enemies_to_win = 150
         self.firewall = Firewall(self)
 
-        self.add(self.enemies)
         self.add(self.firewall)
+        self.add(self.enemies)
         self.add(self.coins)
         self.add(self.players)
 
@@ -74,8 +74,8 @@ class GameGeometryRush(Game):
             for coin in collected_coins:
                 coin.pickup(player)
 
-            if (pygame.sprite.collide_rect(player, self.firewall)):
-                player.damage(1, player.position - self.direction)
+            if not self.firewall.rect.contains(player.rect):
+                player.damage(1, player.position - (self.firewall.direction_to_center(player.position)))
 
             for enemy in self.enemies:
                 if (pygame.sprite.collide_rect(player, enemy)):
@@ -83,23 +83,19 @@ class GameGeometryRush(Game):
         
 
         for bullet in self.bullets:
-            if (pygame.sprite.collide_rect(bullet, self.firewall)):
+            if not self.firewall.rect.contains(bullet.rect):
                 
-                direction1 = (-bullet.direction + self.direction.rotate( 90) + self.direction * 0.01).normalize()
-                direction2 = (-bullet.direction + self.direction.rotate(-90) + self.direction * 0.01).normalize()
+                direction_to_center = self.firewall.direction_to_center(bullet.position)
 
-                bullet1 = Bullet(bullet.position + direction1 * 10, direction1, int(bullet.power/2), None)
-                bullet2 = Bullet(bullet.position + direction2 * 10, direction2, int(bullet.power/2), None)
+                direction1 = (-bullet.direction + direction_to_center.rotate( 90) + direction_to_center * 0.01).normalize()
+                direction2 = (-bullet.direction + direction_to_center.rotate(-90) + direction_to_center * 0.01).normalize()
 
-                if int(bullet.power/2) == 0:
-                    bullet1.drop_coins(1)
-                    bullet2.drop_coins(1)
-                else:
+                bullet1 = Bullet(bullet.position + direction1 * 1, direction1, int(bullet.power/2), None)
+                bullet2 = Bullet(bullet.position + direction2 * 1, direction2, int(bullet.power/2), None)
+
+                if bullet.power > 1:
                     self.add_bullet(bullet1)
                     self.add_bullet(bullet2)
-                
-                if bullet.power % 2 == 1:
-                    bullet.drop_coins(1)
                 
                 bullet.kill()
             
@@ -109,8 +105,8 @@ class GameGeometryRush(Game):
                     bullet.kill()
             
         for coin in self.coins:
-            if pygame.sprite.collide_rect(coin, self.firewall):
-                coin.push(self.direction)
+            if not self.firewall.rect.contains(coin.rect):
+                coin.push(self.firewall.direction_to_center(coin.position))
 
 
         for enemy1 in self.enemies:
@@ -150,7 +146,6 @@ class GameGeometryRush(Game):
         self.screen.fill(self.BG_COLOR)
 
         self.position += self.direction
-        self.position.y += (sum(player.position.y for player in self.players) / max(len(self.players), 1) - self.position.y) * 0.001
         camera_direction = (self.position - self.camera.pos)
         if camera_direction.length() > 0:
             self.camera.pos += camera_direction * 0.3
