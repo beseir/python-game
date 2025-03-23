@@ -7,6 +7,7 @@ from .player import Player
 from game import Game
 from .GeometryRushUI import GeometryRushUI
 from globals import globals
+import input
 
 class GameGeometryRush(Game):
 
@@ -17,7 +18,11 @@ class GameGeometryRush(Game):
 
         self.BG_COLOR = (60, 255, 120)
 
-        self.players = [Player(start_position = pygame.Vector2(100, 100)), Player()] if players is None else players
+        self.inputs = [
+            input.InputKeyboard(pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_SPACE),
+            input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
+        ]
+        self.players = list([Player(i) for i in self.inputs]) if players is None else players
         self.coins =  self.spawn_coins()
 
         self.testEnemy = Enemy(self)
@@ -80,6 +85,7 @@ class GameGeometryRush(Game):
         if camera_direction.length() > 0:
             self.camera.pos += camera_direction * 0.3
         
+        [i.update() for i in self.inputs]
         shouldContinue = super().update(events)
 
         return shouldContinue

@@ -1,16 +1,17 @@
 import pygame
 import math
 from entity import Entity
+from input import Input
 
 class Player(Entity):
     
-    def __init__(self, start_position=None, speed=4, rotation_speed=4):
+    def __init__(self, input_controller: Input, start_position=None, speed=4, rotation_speed=4):
         self.original_image = pygame.Surface((50, 50), pygame.SRCALPHA)
         pygame.draw.polygon(self.original_image, (0, 128, 255), [(50, 25), (0, 0), (0, 50)])
         
         super().__init__(self.original_image, start_position or pygame.math.Vector2(500, 200))
         
-       
+        self.input_controller = input_controller
         self.speed = speed
         self.angle = 0
         self.rotation_speed = rotation_speed
@@ -30,21 +31,6 @@ class Player(Entity):
             raise ValueError("монетки не могут быть меньше нуля")
         self._coins = value
 
-
-    def movement_input(self):
-        keys = pygame.key.get_pressed()
-        movement = pygame.math.Vector2(0, 0)
-        
-        if keys[pygame.K_LEFT]:
-            movement.x -= 1
-        if keys[pygame.K_RIGHT]:
-            movement.x += 1
-        if keys[pygame.K_UP]:
-            movement.y -= 1
-        if keys[pygame.K_DOWN]:
-            movement.y += 1
-            
-        return movement
     
     def update_position(self, movement):
         if movement.length() > 0:
@@ -78,10 +64,8 @@ class Player(Entity):
 
 
     def update(self):
-       
-        movement = self.movement_input()
-        
-        self.update_rotation(movement)
-        self.update_position(movement)
+
+        self.update_rotation(self.input_controller.view_direction)
+        self.update_position(self.input_controller.movement_direction)
         
         self.rect.center = self.position
