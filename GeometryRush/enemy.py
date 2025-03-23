@@ -4,17 +4,19 @@ from entity import Entity
 from .player import Player
 
 class Enemy(Entity):
-    def __init__(self, target: Player):
+    def __init__(self, game):
         self.image = pygame.Surface((50, 50))
         self.image.fill((255, 22, 22))
       
         super().__init__(self.image, pygame.math.Vector2(0, 0))
 
-        self.target = target
+        self.game = game
         self.speed = 1.5
 
 
     def update(self):
+        self.target = self.game.get_nearest_player(self.position)
+
         movement = (self.target.position - self.position)
         if (movement.length() > 1):
             movement = movement.normalize()

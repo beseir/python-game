@@ -10,28 +10,28 @@ from globals import globals
 
 class GameGeometryRush(Game):
 
-    def __init__(self, screen):
+    def __init__(self, screen, players: list[Player] = None):
         super().__init__(screen)
 
         globals["camera"] = self.camera
 
         self.BG_COLOR = (60, 255, 120)
 
-        self.player = Player()
+        self.players = [Player(start_position = pygame.Vector2(100, 100)), Player()] if players is None else players
         self.coins =  self.spawn_coins()
 
-        self.testEnemy = Enemy(self.player)
+        self.testEnemy = Enemy(self)
         self.firewall = Firewall(self)
 
         self.add(self.testEnemy)
         self.add(self.firewall)
         self.add(self.coins)
-        self.add(self.player)
+        self.add(self.players)
 
         self.coin_spawn_time = 2000
         self.coin_last_spawn_time = pygame.time.get_ticks()
 
-        self.ui = GeometryRushUI(self.screen, self.player)
+        self.ui = GeometryRushUI(self.screen, self.players)
 
         self.direction = pygame.Vector2(1, 0)
         self.position = pygame.Vector2(0, 0)
@@ -52,15 +52,16 @@ class GameGeometryRush(Game):
         
         
         #чек колизий
-        collected_coins = pygame.sprite.spritecollide(self.player, self.coins, False)
-        for coin in collected_coins:
-            coin.pickup(self.player)
+        for player in self.players:
+            collected_coins = pygame.sprite.spritecollide(player, self.coins, False)
+            for coin in collected_coins:
+                coin.pickup(player)
 
-        if (pygame.sprite.collide_rect(self.player, self.firewall)):
-            self.player.damage(1, self.player.position - self.direction)
+            if (pygame.sprite.collide_rect(player, self.firewall)):
+                player.damage(1, player.position - self.direction)
 
-        if (pygame.sprite.collide_rect(self.player, self.testEnemy)):
-            self.player.damage(1, self.testEnemy.position)
+            if (pygame.sprite.collide_rect(player, self.testEnemy)):
+                player.damage(1, self.testEnemy.position)
             
             
         current_time = pygame.time.get_ticks()
@@ -74,7 +75,7 @@ class GameGeometryRush(Game):
         self.screen.fill(self.BG_COLOR)
 
         self.position += self.direction
-        self.position.y += (self.player.position.y - self.position.y) * 0.001
+        self.position.y += (sum(player.position.y for player in self.players) / len(self.players) - self.position.y) * 0.001
         camera_direction = (self.position - self.camera.pos)
         if camera_direction.length() > 0:
             self.camera.pos += camera_direction * 0.3
@@ -82,3 +83,17 @@ class GameGeometryRush(Game):
         shouldContinue = super().update(events)
 
         return shouldContinue
+
+
+    def get_nearest_player(self, position):
+        nearest_player = None
+        min_distance = float('inf')
+
+        for player in self.players:
+            distance = position.distance_to(player.position)
+
+            if distance < min_distance:
+                min_distance = distance
+                nearest_player = player
+
+        return nearest_player
