@@ -14,7 +14,7 @@ class Enemy(Entity):
 
         self.game = game
         self.speed = 1.5
-        self.max_health = 20
+        self.max_health = 20 * self.game.difficulty
         self.health = self.max_health
         self.show_health = True
 
@@ -34,7 +34,7 @@ class Enemy(Entity):
         self.position += self.velocity * 0.4
         self.velocity *= 0.9
 
-        if self.health <= 0:
-            self.drop_coins(10)
+        if self.health <= self.max_health * 0.05:
+            self.drop_coins(int(25 * self.game.difficulty))
             self.kill()
             self.game.defeated_enemies += 1

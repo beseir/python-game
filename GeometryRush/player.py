@@ -9,7 +9,7 @@ class Player(Entity):
     
     def __init__(self, input_controller: Input, start_position=None, speed=4, rotation_speed=4):
         self.original_image = pygame.Surface((50, 50), pygame.SRCALPHA)
-        pygame.draw.polygon(self.original_image, (0, 128, 255), [(50, 25), (0, 0), (0, 50)])
+        pygame.draw.polygon(self.original_image, (random.randint(100, 255), random.randint(100, 255), random.randint(100, 255)), [(50, 25), (0, 0), (0, 50)])
         
         super().__init__(self.original_image, start_position or pygame.math.Vector2(0, 0))
         

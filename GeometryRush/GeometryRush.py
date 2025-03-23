@@ -124,14 +124,15 @@ class GameGeometryRush(Game):
             self.add(new_coin)
             self.coin_last_spawn_time = current_time 
 
-        if len(self.enemies) < len(self.players):
+        self.difficulty = (((self.defeated_enemies * 4) / self.enemies_to_win) + 1)
+        if len(self.enemies) < len(self.players) * self.difficulty:
             # в начале игры, когда убито мало врагов, будут спавнится в основном лёгкие (значение r будет близко к 1.0)
             # а под конец игры значение r в среднем будет уменьшаться
-            r = random.random() ** (self.defeated_enemies / (self.enemies_to_win*0.6))
+            r = random.random() ** ((self.defeated_enemies + len(self.enemies)) / (self.enemies_to_win*0.6))
             # ЧЕМ МЕНЬШЕ r - ТЕМ СЛОЖНЕЕ ДОЛЖЕН БЫТЬ ПРОТИВНИК
 
             position = pygame.Vector2(random.uniform(self.camera.pos.x+1000, self.camera.pos.x+4000), random.uniform(self.camera.pos.y-300, self.camera.pos.y+300))
-            if r < 0.1:
+            if r < 0.6:
                 from .enemy_chain import EnemyChain
                 enemy = EnemyChain(position, self)
             else:

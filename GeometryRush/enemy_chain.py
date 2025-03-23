@@ -15,7 +15,7 @@ class EnemyChain(Entity):
 
         self.game = game
         self.speed = 1.5
-        self.max_health = 40
+        self.max_health = 40 * self.game.difficulty
         self.health = self.max_health
         self.show_health = True
 
@@ -38,7 +38,7 @@ class EnemyChain(Entity):
 
         self.position += self.velocity * 0.9
 
-        if self.health <= 0:
-            self.drop_coins(50)
+        if self.health <= self.max_health * 0.05:
+            self.drop_coins(int(100 * self.game.difficulty))
             self.kill()
             self.game.defeated_enemies += 1
