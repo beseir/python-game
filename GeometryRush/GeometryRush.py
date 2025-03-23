@@ -23,7 +23,7 @@ class GameGeometryRush(Game):
             input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
         ]
         self.players = list([Player(i) for i in self.inputs]) if players is None else players
-        self.coins =  self.spawn_coins()
+        self.coins = pygame.sprite.Group()
 
         self.testEnemy = Enemy(self)
         self.firewall = Firewall(self)
@@ -33,22 +33,13 @@ class GameGeometryRush(Game):
         self.add(self.coins)
         self.add(self.players)
 
-        self.coin_spawn_time = 2000
+        self.coin_spawn_time = 1000 / len(self.players)
         self.coin_last_spawn_time = pygame.time.get_ticks()
 
         self.ui = GeometryRushUI(self.screen, self.players)
 
         self.direction = pygame.Vector2(1, 0)
         self.position = pygame.Vector2(0, 0)
-
-
-    
-    def spawn_coins(self):
-        coins = pygame.sprite.Group()
-        for _ in range(5):
-            coin = Coin(random.randint(50, 750), random.randint(50, 550))
-            coins.add(coin)
-        return coins
 
     name = "Geometry Rush"
 

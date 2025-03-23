@@ -9,7 +9,7 @@ class Player(Entity):
         self.original_image = pygame.Surface((50, 50), pygame.SRCALPHA)
         pygame.draw.polygon(self.original_image, (0, 128, 255), [(50, 25), (0, 0), (0, 50)])
         
-        super().__init__(self.original_image, start_position or pygame.math.Vector2(500, 200))
+        super().__init__(self.original_image, start_position or pygame.math.Vector2(0, 0))
         
         self.input_controller = input_controller
         self.speed = speed
