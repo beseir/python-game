@@ -17,8 +17,9 @@ class Player(Entity):
         self.speed = speed
         self.angle = 0
         self.rotation_speed = rotation_speed
-        self.cooldown_time = 500
+        self.cooldown_time = 100
         self.last_shoot_time = 0
+        self.attack_pressed = False
      
         self.coins = 0
         self.show_health = True
@@ -72,12 +73,15 @@ class Player(Entity):
         self.update_rotation(self.input_controller.view_direction)
         self.update_position(self.input_controller.movement_direction)
         
-        if self.input_controller.attack and pygame.time.get_ticks() - self.last_shoot_time >= self.cooldown_time:
+        if not self.input_controller.attack and self.attack_pressed and pygame.time.get_ticks() - self.last_shoot_time >= self.cooldown_time:
             self.last_shoot_time = pygame.time.get_ticks()
             power = min(self.coins, 10)
             self.coins -= power
-            if power > 0:
-                self.game.add_bullet(Bullet(self.position, self.input_controller.view_direction, power, self))
+            power = max(1, power)
+            self.game.add_bullet(Bullet(self.position, self.input_controller.view_direction, power, self))
+        
+        self.attack_pressed = self.input_controller.attack
+            
         
         if (self.health <= 0):
             self.drop_coins(self.coins)

@@ -61,6 +61,8 @@ class YokeInput(Input):
         new_view_direction = pygame.math.Vector2(floats[5], floats[6])
         if new_view_direction.length() > 0:
             self.view_direction = pygame.math.Vector2(floats[5], floats[6]).normalize()
+        elif self.attack:
+            pass
         elif self.movement_direction.length() > 0:
             self.view_direction = self.movement_direction
     
