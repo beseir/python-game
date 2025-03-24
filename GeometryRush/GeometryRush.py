@@ -24,6 +24,8 @@ class GameGeometryRush(Game):
             # input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
         ]
         self.players = pygame.sprite.Group(list([Player(i) for i in self.inputs])) if players is None else players
+        self.players.add(pygame.sprite.Group(list([Player(globals["yoke"].inputs[ip]) for ip in globals["yoke"].inputs])))
+        
         self.coins = pygame.sprite.Group()
 
         self.enemies = pygame.sprite.Group()

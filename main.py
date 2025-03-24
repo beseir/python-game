@@ -6,10 +6,12 @@ from GeometryRush import GeometryRush
 pygame.init()
 globals["screen"] = pygame.display.set_mode((888, 555), pygame.RESIZABLE | pygame.FULLSCREEN)
 
+from yoke import YokeManager
+yoke = YokeManager()
+
 import menu
 # импорт меню после инициализации pygame, потому что
 # в menu.py используется screen
-
 
 def main():
     clock = pygame.time.Clock()
@@ -17,6 +19,7 @@ def main():
 
     while running:
 
+        yoke.update()
         running = globals["selectedGame"].update(pygame.event.get())
         pygame.display.flip()
         clock.tick(120)

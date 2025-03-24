@@ -25,6 +25,9 @@ class Menu(Scene):
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mousePos = event.pos
 
+        globals["screen"].fill((0, 0, 0))
+        drawText(globals["screen"], "connected yoke devices: " + str(len(globals["yoke"].inputs.items())), 50, (255, 255, 255), (globals["screen"].get_size()[0]/2, 150/3), 0)
+
         i = 0
         for game in globals["games"]:
             i += 150
