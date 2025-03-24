@@ -99,8 +99,12 @@ class Player(Entity):
             self.attack_changeing_time = None
 
             self.last_shoot_time = pygame.time.get_ticks()
-            self.attack_types[self.attack_type_index].attack(self, self.game)
-            self.attack_bar_background = self.attack_types[self.attack_type_index].color
+            attack_type_index = self.attack_type_index
+            if ratio < 0.5 and attack_type_index > 0:
+                attack_type_index -= 1
+                
+            self.attack_types[attack_type_index].attack(self, self.game)
+            self.attack_bar_background = self.attack_types[attack_type_index].color
             self.attack_type_index = 0
 
             
