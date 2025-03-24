@@ -48,17 +48,19 @@ class YokeInput(Input):
         self.ip = ip
         self.view_direction = pygame.Vector2(1, 0)
     
-    def update(self, floats):
+    def update(self, floats = None):
+        if floats is None:
+            return
         # floats[0..2] - акселерометр
         # floats[3..4] - x1, y1
         # floats[5..6] - x2, y2
-        self.movement_direction = pygame.math.Vector2(floats[5], floats[6])
+        self.movement_direction = pygame.math.Vector2(floats[3], floats[4])
         if self.movement_direction.length() > 0:
             self.movement_direction = self.movement_direction.normalize()
         
-        new_view_direction = pygame.math.Vector2(floats[3], floats[4])
+        new_view_direction = pygame.math.Vector2(floats[5], floats[6])
         if new_view_direction.length() > 0:
-            self.view_direction = pygame.math.Vector2(floats[3], floats[4]).normalize()
+            self.view_direction = pygame.math.Vector2(floats[5], floats[6]).normalize()
         elif self.movement_direction.length() > 0:
             self.view_direction = self.movement_direction
     

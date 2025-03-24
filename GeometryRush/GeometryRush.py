@@ -11,7 +11,7 @@ from .bullet import Bullet
 
 class GameGeometryRush(Game):
 
-    def __init__(self, screen, players: list[Player] = None):
+    def __init__(self, screen, inputs: list[input.Input]):
         super().__init__(screen)
 
         globals["camera"] = self.camera
@@ -19,12 +19,8 @@ class GameGeometryRush(Game):
         self.BG_COLOR = (60, 255, 120)
 
         self.bullets = pygame.sprite.Group()
-        self.inputs = [
-            input.InputKeyboard(pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d, pygame.K_SPACE),
-            # input.InputKeyboard(pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL),
-        ]
-        self.players = pygame.sprite.Group(list([Player(i) for i in self.inputs])) if players is None else players
-        self.players.add(pygame.sprite.Group(list([Player(globals["yoke"].inputs[ip]) for ip in globals["yoke"].inputs])))
+        self.inputs = inputs
+        self.players = pygame.sprite.Group(list([Player(i) for i in self.inputs]))
         
         self.coins = pygame.sprite.Group()
 
