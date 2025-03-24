@@ -11,6 +11,7 @@ class Menu(Scene):
         self.screen = screen
         self._entities = pygame.sprite.Group()
         self.local_players = 0
+        self.local_players_forced_set = False
 
         from input import InputKeyboard
         self.local_inputs = [
@@ -42,6 +43,7 @@ class Menu(Scene):
         drawText(globals["screen"], "local players: " + str(self.local_players), 70, (0, 0, 0), center, 0)
         if mousePos is not None and rect.collidepoint(mousePos):
             self.local_players = (self.local_players + 1) % (len(self.local_inputs) + 1)
+            self.local_players_forced_set = True
 
 
         drawText(globals["screen"], "connected yoke devices: " + str(len(globals["yoke"].inputs.items())), 50, (255, 255, 255), (globals["screen"].get_size()[0]/2, 150), 0)
@@ -69,7 +71,11 @@ class Menu(Scene):
     def generate_inputs(self):
         inputs = []
 
-        for i in range(self.local_players):
+        local_players = self.local_players
+        if local_players == 0 and len(globals["yoke"].inputs) == 0 and not self.local_players_forced_set:
+            local_players = 1
+
+        for i in range(local_players):
             inputs.append(self.local_inputs[i])
 
         for yoke_ip in globals["yoke"].inputs:
