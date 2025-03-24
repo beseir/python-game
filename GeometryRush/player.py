@@ -119,6 +119,11 @@ class Player(Entity):
 
     def update(self):
 
+        if self.attack_pressed:
+            from globals import globals
+            start_pos = globals["camera"].apply(self.position)
+            pygame.draw.line(globals["screen"], (50, 50, 50), start_pos, start_pos + self.input_controller.view_direction * 1000, 2)
+
         self.update_rotation(self.input_controller.view_direction)
         self.update_position(self.input_controller.movement_direction)
         self.attack_update()
