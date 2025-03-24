@@ -15,6 +15,10 @@ class Entity(pygame.sprite.Sprite):
         self.show_health = False
         self.game = globals["game"]
 
+        self.bar_ratio = None
+        self.bar_bg_color = None
+        self.bar_fg_color = None
+
     def damage(self, damage: int, attacker_position: pygame.Vector2 = None):
         if attacker_position != None:
             attack_direction = (self.position - attacker_position)
@@ -46,7 +50,24 @@ class Entity(pygame.sprite.Sprite):
 
             pygame.draw.rect(surface, (100, 100, 100), camera.apply_rect(pygame.Rect(bar_x, bar_y, bar_width, bar_height)))
             pygame.draw.rect(surface, (255, 0, 255), camera.apply_rect(pygame.Rect(bar_x, bar_y, current_bar_width, bar_height)))
+
+        # custom bar
+        if self.bar_ratio is not None:
+            bar_width = 50
+            bar_height = 6
+            bar_x = self.rect.x + (self.rect.width - bar_width) / 2
+            bar_y = self.rect.top - (bar_height - 4) * 10
+
+            current_bar_width = int(bar_width * self.bar_ratio)
+
+            pygame.draw.rect(surface, self.bar_bg_color, camera.apply_rect(pygame.Rect(bar_x, bar_y, bar_width, bar_height)))
+            pygame.draw.rect(surface, self.bar_fg_color, camera.apply_rect(pygame.Rect(bar_x, bar_y, current_bar_width, bar_height)))
     
+    def set_bar(self, ratio, bg_color, fg_color):
+        self.bar_ratio = ratio
+        self.bar_bg_color = bg_color
+        self.bar_fg_color = fg_color
+
     def drop_coins(self, count):
         from GeometryRush.coin import Coin
         for _ in range(count):

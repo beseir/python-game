@@ -72,6 +72,8 @@ class Player(Entity):
 
         self.update_rotation(self.input_controller.view_direction)
         self.update_position(self.input_controller.movement_direction)
+
+        self.set_bar(min(float(pygame.time.get_ticks() - self.last_shoot_time) / float(self.cooldown_time), 1.0), (255, 255, 255), (0, 0, 0))
         
         if not self.input_controller.attack and self.attack_pressed and pygame.time.get_ticks() - self.last_shoot_time >= self.cooldown_time:
             self.last_shoot_time = pygame.time.get_ticks()
