@@ -51,5 +51,5 @@ class Entity(pygame.sprite.Sprite):
         from GeometryRush.coin import Coin
         for _ in range(count):
             coin = Coin(self.position.x, self.position.y)
-            coin.velocity = (self.velocity + self.direction * 3 + pygame.Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0)).normalize()) * random.uniform(0.0, max(count / 10.0, 10.0))
+            coin.velocity = (self.velocity + self.direction * 1.5 + pygame.Vector2(random.uniform(-1.0, 1.0), random.uniform(-1.0, 1.0)).normalize() * 5) * random.uniform(0.0, max(count / 10.0, 10.0))
             self.game.add_coin(coin)
